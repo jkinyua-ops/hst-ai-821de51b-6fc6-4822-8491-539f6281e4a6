@@ -2,3 +2,5 @@
 
 "add an events page that users can view available events and book by paying via stripe"
 
+"5.418 /source/Pages/BookEvent.razor(35,13): error CS0246: The type or namespace name 'Event' could not be found (are you missing a using directive or an assembly reference?) [/source/TicketingApp.csproj]"
+
