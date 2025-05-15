@@ -1,0 +1,65 @@
+@page "/book/{EventId:int}"
+@inject EventService EventService
+@inject StripeService StripeService
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<h1>Book Event</h1>
+
+@if (selectedEvent == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>@selectedEvent.Name</h2>
+    <p>Date: @selectedEvent.Date.ToShortDateString()</p>
+    <p>Price: $@selectedEvent.Price</p>
+
+    <form @onsubmit="HandleSubmit">
+        <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+        </div>
+
+        <!-- Used to display form errors. -->
+        <div id="card-errors" role="alert"></div>
+
+        <button type="submit" class="btn btn-primary mt-3">Pay Now</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int EventId { get; set; }
+
+    private Event selectedEvent;
+    private string clientSecret;
+
+    protected override async Task OnInitializedAsync()
+    {
+        selectedEvent = await EventService.GetEventAsync(EventId);
+        if (selectedEvent != null)
+        {
+            var paymentIntent = await StripeService.CreatePaymentIntentAsync((long)(selectedEvent.Price * 100), "usd");
+            clientSecret = paymentIntent.ClientSecret;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeStripe", clientSecret);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        var result = await JSRuntime.InvokeAsync<bool>("confirmPayment");
+        if (result)
+        {
+            await EventService.BookEventAsync(EventId);
+            NavigationManager.NavigateTo("/booking-confirmation");
+        }
+    }
+}
