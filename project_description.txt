@@ -1,0 +1,1 @@
+The app is a blazor server app following default blazor server patterns. The goal of the app is to provide a way for users to book tickets and pay via stripe
