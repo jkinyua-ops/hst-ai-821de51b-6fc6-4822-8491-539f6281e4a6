@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using TicketingApp.Data;
-using TicketingApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddSingleton<EventService>();
-builder.Services.AddScoped<StripeService>();
+builder.Services.AddScoped<EventService>();
 
 var app = builder.Build();
 
