@@ -1,0 +1,2 @@
+"add an events page that users can view available events and book by paying via stripe"
+
